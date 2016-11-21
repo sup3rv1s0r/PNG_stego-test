@@ -52,7 +52,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DLL ASM Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DLL Debug|Win32'" Label="Configuration">
@@ -72,12 +72,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LIB Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DLL Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -338,11 +338,9 @@
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <PreprocessorDefinitions>WIN32;_DEBUG;ASMV;ASMINF;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AssemblerListingLocation>G:\Programming\PNG_Encoder\ZlibSrc\src\zlib\1.2.3\zlib-1.2.3\projects\visualc6\Win32_DLL_ASM_Debug\</AssemblerListingLocation>
-      <PrecompiledHeaderOutputFile>G:\Programming\PNG_Encoder\ZlibSrc\src\zlib\1.2.3\zlib-1.2.3\projects\visualc6\Win32_DLL_ASM_Debug\zlib.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
       <PrecompiledHeader />
-      <ObjectFileName>G:\Programming\PNG_Encoder\ZlibSrc\src\zlib\1.2.3\zlib-1.2.3\projects\visualc6\Win32_DLL_ASM_Debug\</ObjectFileName>
-      <ProgramDataBaseFileName>G:\Programming\PNG_Encoder\ZlibSrc\src\zlib\1.2.3\zlib-1.2.3\projects\visualc6\Win32_DLL_ASM_Debug\</ProgramDataBaseFileName>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Midl>

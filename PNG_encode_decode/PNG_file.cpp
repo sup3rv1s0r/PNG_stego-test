@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include "PNG_file.h"
 
+#pragma comment (lib,"libpng.lib")
+
 #define PNG_SIG_LENGTH 8 //The signature length for PNG
 #define BYTE_SIZE 8 //Size of a byte
 #define SIZE_WIDTH 32 //The number of bits used for storing the length of a file

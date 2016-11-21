@@ -1,4 +1,8 @@
-#include <png.h>
+#include "..\libpng-1.2.37-src\png.h"
+
+// lib comment to use libpng and zlib library
+#pragma comment(lib,"..\\libpng-1.2.37-src\\projects\\VS2012\\Win32_LIB_Release\\libpng.lib")
+#pragma comment(lib,"..\\zlib-1.2.3\\projects\\VS2012\\Win32_LIB_Release\\zlib.lib")
 
 /* Class PNG_file
  * Contains the data for a PNG file object
