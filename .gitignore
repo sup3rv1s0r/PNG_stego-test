@@ -1,3 +1,7 @@
+# VS DB/LOG
+*.sdf
+*.log
+
 # Compiled Object files
 *.slo
 *.lo
