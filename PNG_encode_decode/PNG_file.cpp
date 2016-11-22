@@ -10,8 +10,6 @@
 #include <stdlib.h>
 #include "PNG_file.h"
 
-#pragma comment (lib,"libpng.lib")
-
 #define PNG_SIG_LENGTH 8 //The signature length for PNG
 #define BYTE_SIZE 8 //Size of a byte
 #define SIZE_WIDTH 32 //The number of bits used for storing the length of a file
@@ -230,7 +228,11 @@ void PNG_file::encode(const char *fileToEncodeName) {
 
 	FILE * fileToEncode;
 
-	unsigned char buffer = 0;
+	unsigned char buffer = NULL;
+	char *szOriginalStr = NULL;
+	char *szEncodedStr = NULL;
+
+	int i = 0;
 
 	fileToEncode = fopen (fileToEncodeName,"rb");
 
@@ -240,6 +242,22 @@ void PNG_file::encode(const char *fileToEncodeName) {
 
 	//TODO CONSIDER ADDING CHECK FOR FILES THAT ARE TOO BIG
 	unsigned long size = filesize(fileToEncodeName);
+
+
+	/* malloc memory to store file data */ 
+	szOriginalStr = (char*)malloc(sizeof(char)*size +1);
+	/* read data from file */
+	fread(szOriginalStr,sizeof(char),size,fileToEncode);
+	
+	/* malloc memory for encoded string*/
+	/* in normal case, encoded string size is 1.3 times bigger than original */
+	/* so sizeof(szEncodedStr) = (int)(original_size*1.3)+2 */
+	/* +2 is for temporary and null-termination(1 byte each) */
+	szEncodedStr = (char*)malloc((int)(sizeof(char)*size)*1.3+2);
+
+	/* encode original string with MIME Base64 */
+	base64_encode(szOriginalStr,size,&szEncodedStr);
+	size = strlen(szEncodedStr);
 
 	//This section of code encodes the input file into the picture
 	//It encodes the input file bit by bit into the least significant
@@ -261,9 +279,10 @@ void PNG_file::encode(const char *fileToEncodeName) {
 			{
 				if(x%BYTE_SIZE == 0)
 				{
-					if(!fread(&buffer, 1, 1, fileToEncode)) 
-						//goto loop_end;
+					//if(!fread(&buffer, 1, 1, fileToEncode)) 
+					if(i >= strlen(szEncodedStr))
 						break;
+					buffer = szEncodedStr[i++];
 				}
 				//png_bytep here = row_pointers[y]+x; for debugging
 				if((buffer & ipow(2,x%BYTE_SIZE)))
@@ -276,10 +295,10 @@ void PNG_file::encode(const char *fileToEncodeName) {
 				exit(1);
 	}
 
-	//goto jumps here to break out of multiple loops
-	//loop_end:
-
 	fclose(fileToEncode);
+
+	free(szOriginalStr);
+	free(szEncodedStr);
 
 }
 
