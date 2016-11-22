@@ -306,8 +306,12 @@ void PNG_file::decode(const char *outputFileName) {
 	//BEGIN DECODING HERE
 
 	FILE * outputFile;
+	int loopbit = 0;
+	int i = 0;
 
 	unsigned char buffer = 0;
+	char *szOriginalStr = NULL;
+	unsigned char *szDecodedStr = NULL;
 
 	outputFile = fopen (outputFileName,"wb");
 
@@ -318,38 +322,56 @@ void PNG_file::decode(const char *outputFileName) {
 	unsigned int size = 0;
 
 	//
-	for(int y=0; y < read_ptr->height; y++) {
+	for(int y=0; y < read_ptr->height; y++)
+	{
 		int x=0;
 		//Write the file size into the file y==0 ensures that it only happens
 		//once
 		if(y == 0)
-			for(x; x < SIZE_WIDTH; x++) {
+			for(x; x < SIZE_WIDTH; x++)
+			{
 				size |= ((*(row_pointers[0]+x) & 1 ) << x);
 			}
-		for(x; x < read_ptr->width*3; x++) {
-			if((x > SIZE_WIDTH || y > 0) && x%BYTE_SIZE == 0) {
-				fwrite(&buffer, 1, 1, outputFile);
-				buffer = 0;
+			szOriginalStr = (char *)malloc(sizeof(char)*size);
+			for(x; x < read_ptr->width*3; x++)
+			{
+				if((x > SIZE_WIDTH || y > 0) && x%BYTE_SIZE == 0)
+				{
+					//fwrite(&buffer, 1, 1, outputFile);
+					szOriginalStr[i++] = buffer;
+					buffer = 0;
+				}
+				//png_bytep here = row_pointers[y]+x; for debugging
+				if(((read_ptr->width*y)*3+x) == size*BYTE_SIZE+SIZE_WIDTH)
+				{
+					loopbit = 1;
+					break;
+				}
+				buffer |= ((*(row_pointers[y]+x) & 1) << x%BYTE_SIZE);
 			}
-			//png_bytep here = row_pointers[y]+x; for debugging
-			if(((read_ptr->width*y)*3+x) == size*BYTE_SIZE+SIZE_WIDTH)
-				goto loop_end;
-			buffer |= ((*(row_pointers[y]+x) & 1) << x%BYTE_SIZE);
-		}
+			if(loopbit)
+				break;
 	}
 
-	//goto jumps here to break out of multiple loops
-	loop_end:
+	szDecodedStr = (unsigned char *)malloc((int)sizeof(unsigned char)*size/1.3+9);
+	base64_decode(szOriginalStr,szDecodedStr,strlen(szOriginalStr));
 
+	i=0;
+	while(szDecodedStr[i] != NULL)
+	{
+		fwrite(&szDecodedStr[i++],1,1,outputFile);
+	}
 	fclose(outputFile);
 
+	free(szOriginalStr);
+	free(szDecodedStr);
 }
 
 void PNG_file::outputPNG(const char *outputFileName) {
 	//START WRITING HERE
 
 	FILE * outputFile;
-	
+
 	outputFile = fopen (outputFileName,"wb");
 
 	//Check if the file opened
