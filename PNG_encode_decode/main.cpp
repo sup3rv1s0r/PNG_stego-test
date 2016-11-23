@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 {
 	/*
 	 * Command Options
-	 * stego.exe [-e <input>] [-d <output>] <image>
+	 * stego.exe [-e <input> -o <output_image> | -d <output>] <image>
 	 * Encode : -e
 	 * Decode : -d
 	 * Output : -o
