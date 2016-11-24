@@ -7,6 +7,7 @@
 #else
 #pragma comment(lib,"..\\libpng-1.2.37-src\\projects\\VS2012\\Win32_LIB_Release\\libpng.lib")
 #pragma comment(lib,"..\\zlib-1.2.3\\projects\\VS2012\\Win32_LIB_Release\\zlib.lib")
+
 #endif
 /* Class PNG_file
  * Contains the data for a PNG file object

@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PNG_encode_decode", "PNG_encode_decode\PNG_encode_decode.vcxproj", "{74322984-B567-465F-BAC1-64C9C7484332}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib-1.2.3\projects\VS2012\zlib.vcxproj", "{371D89A3-A7E9-405D-95C7-089328622DC1}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpng", "libpng-1.2.37-src\projects\VS2012\libpng.vcxproj", "{8C01CC03-EC2E-4711-865A-1B7AC8A55798}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AESStringCrypt", "AESStringCrypt\AESStringCrypt.vcxproj", "{18423B7E-73EA-40FF-9EE3-D896D948DE29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +90,28 @@ Global
 		{8C01CC03-EC2E-4711-865A-1B7AC8A55798}.LIB Release|Win32.Build.0 = LIB Release|Win32
 		{8C01CC03-EC2E-4711-865A-1B7AC8A55798}.Release|Win32.ActiveCfg = LIB Release|Win32
 		{8C01CC03-EC2E-4711-865A-1B7AC8A55798}.Release|Win32.Build.0 = LIB Release|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.Debug|Win32.ActiveCfg = Debug|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.Debug|Win32.Build.0 = Debug|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.DLL ASM Debug|Win32.ActiveCfg = Debug|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.DLL ASM Debug|Win32.Build.0 = Debug|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.DLL ASM Release|Win32.ActiveCfg = Release|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.DLL ASM Release|Win32.Build.0 = Release|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.DLL Debug|Win32.ActiveCfg = Debug|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.DLL Debug|Win32.Build.0 = Debug|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.DLL Release|Win32.ActiveCfg = Release|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.DLL Release|Win32.Build.0 = Release|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.DLL VB|Win32.ActiveCfg = Debug|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.DLL VB|Win32.Build.0 = Debug|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.LIB ASM Debug|Win32.ActiveCfg = Debug|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.LIB ASM Debug|Win32.Build.0 = Debug|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.LIB ASM Release|Win32.ActiveCfg = Release|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.LIB ASM Release|Win32.Build.0 = Release|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.LIB Debug|Win32.ActiveCfg = Debug|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.LIB Debug|Win32.Build.0 = Debug|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.LIB Release|Win32.ActiveCfg = Release|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.LIB Release|Win32.Build.0 = Release|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.Release|Win32.ActiveCfg = Release|Win32
+		{18423B7E-73EA-40FF-9EE3-D896D948DE29}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
