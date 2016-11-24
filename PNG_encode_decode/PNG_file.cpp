@@ -223,7 +223,8 @@ PNG_file::PNG_file(const char *inputFileName) {
 	fclose(inputFile);
 }
 
-void PNG_file::encode(const char *fileToEncodeName) {
+void PNG_file::encode(const char *fileToEncodeName, char *passphrase)
+{
 	//BEGIN ENCODING HERE
 
 	FILE * fileToEncode;
@@ -231,6 +232,7 @@ void PNG_file::encode(const char *fileToEncodeName) {
 	unsigned char buffer = NULL;
 	char *szOriginalStr = NULL;
 	char *szEncodedStr = NULL;
+	char *szEncryptedStr = NULL;
 
 	int i = 0;
 
@@ -257,7 +259,12 @@ void PNG_file::encode(const char *fileToEncodeName) {
 
 	/* encode original string with MIME Base64 */
 	base64_encode(szOriginalStr,size,&szEncodedStr);
-	size = strlen(szEncodedStr);
+
+	/* the encrypted string is up to 68 bytes larger than the plaintext string */
+	szEncryptedStr = (char *)malloc(sizeof(char)*strlen(szEncodedStr)+68);
+	AESStringCrypt((unsigned char*)passphrase,strlen(passphrase),(unsigned char*)szEncodedStr,strlen(szEncodedStr),(unsigned char*)szEncryptedStr);
+
+	size = sizeof(char)*strlen(szEncodedStr)+68; //strlen(szEncryptedStr);
 
 	//This section of code encodes the input file into the picture
 	//It encodes the input file bit by bit into the least significant
@@ -280,9 +287,9 @@ void PNG_file::encode(const char *fileToEncodeName) {
 				if(x%BYTE_SIZE == 0)
 				{
 					//if(!fread(&buffer, 1, 1, fileToEncode)) 
-					if(i >= strlen(szEncodedStr))
+					if(i >= strlen(szEncodedStr)+68)
 						break;
-					buffer = szEncodedStr[i++];
+					buffer = szEncryptedStr[i++];
 				}
 				//png_bytep here = row_pointers[y]+x; for debugging
 				if((buffer & ipow(2,x%BYTE_SIZE)))
@@ -299,19 +306,22 @@ void PNG_file::encode(const char *fileToEncodeName) {
 
 	free(szOriginalStr);
 	free(szEncodedStr);
+	free(szEncryptedStr);
 
 }
 
-void PNG_file::decode(const char *outputFileName) {
+void PNG_file::decode(const char *outputFileName, char *passphrase)
+{
 	//BEGIN DECODING HERE
 
 	FILE * outputFile;
 	int loopbit = 0;
-	int i = 0;
+	int i = 0, j=0;
 
 	unsigned char buffer = 0;
 	char *szOriginalStr = NULL;
 	unsigned char *szDecodedStr = NULL;
+	char *szDecryptedStr = NULL;
 
 	outputFile = fopen (outputFileName,"wb");
 
@@ -353,8 +363,12 @@ void PNG_file::decode(const char *outputFileName) {
 				break;
 	}
 
+	szDecryptedStr = (char *)malloc(sizeof(char)*size);
+	j = AESStringDecrypt((unsigned char*)passphrase,strlen(passphrase),(unsigned char*)szOriginalStr,size,(unsigned char*)szDecryptedStr);
+	memset(szDecryptedStr+(size-68),0,size-68);
+
 	szDecodedStr = (unsigned char *)malloc((int)sizeof(unsigned char)*size/1.3+9);
-	base64_decode(szOriginalStr,szDecodedStr,strlen(szOriginalStr));
+	base64_decode(szDecryptedStr,szDecodedStr,strlen(szDecryptedStr));
 
 	i=0;
 	while(szDecodedStr[i] != NULL)
@@ -365,6 +379,7 @@ void PNG_file::decode(const char *outputFileName) {
 
 	free(szOriginalStr);
 	free(szDecodedStr);
+	free(szDecryptedStr);
 }
 
 void PNG_file::outputPNG(const char *outputFileName) {
