@@ -67,7 +67,6 @@
   <ItemGroup>
     <ClCompile Include="aes.c" />
     <ClCompile Include="AESStringCrypt.c" />
-    <ClCompile Include="sctest.c" />
     <ClCompile Include="sha256.c" />
   </ItemGroup>
   <ItemGroup>

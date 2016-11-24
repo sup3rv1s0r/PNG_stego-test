@@ -21,9 +21,6 @@
     <ClCompile Include="AESStringCrypt.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="sctest.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="sha256.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
