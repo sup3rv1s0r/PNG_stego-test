@@ -62,6 +62,8 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	HWND hRadioEncode, hRadioDecode;
 	HWND hCheckEncryption;
 	HWND hEditMessage, hEditEncryption;
+	char *szPassPhrase;
+	int nLen=0;
 
 	switch(uMsg)
 	{
@@ -159,6 +161,45 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					SetDlgItemText(hwndDlg,IDC_EDIT_ENCRYPTION_KEY,NULL);
 					SendMessage(hEditEncryption,EM_SETREADONLY,TRUE,FALSE);
+				}
+				break;
+			}
+		case IDC_BUTTON_ACTION:
+			{
+				hRadioEncode = GetDlgItem(hwndDlg,IDC_RADIO_ENCODE);
+				hRadioDecode = GetDlgItem(hwndDlg,IDC_RADIO_DECODE);
+				hCheckEncryption = GetDlgItem(hwndDlg,IDC_CHECK_ENCRYPT_KEY);
+
+				/* Check whether en/decrypt it or not */
+				/* If checkbox remains checked */
+				if(SendMessage(hCheckEncryption,BM_GETCHECK,0,0) == BST_CHECKED)
+				{
+					/* Get dialog item handle */
+					hEditEncryption = GetDlgItem(hwndDlg,IDC_EDIT_ENCRYPTION_KEY);
+					/* Get passphrase length */
+					nLen = GetWindowTextLength(hEditEncryption);
+
+					/* Allocate Memory */
+					szPassPhrase = (char*)malloc(sizeof(char)*nLen+1);
+					/* Get passphrase data */
+					GetDlgItemText(hwndDlg,IDC_EDIT_ENCRYPTION_KEY,szPassPhrase,nLen+1);
+				}
+				/* If checkbox remains unchecked */
+				else
+					/* If szPassPhrase is NULL, it means it will not use en/decryption */
+					szPassPhrase = NULL;
+
+				/* If it is in encode mode */
+				if(SendMessage(hRadioEncode,BM_GETCHECK,0,0) == BST_CHECKED)
+				{
+				}
+				/* If it is in decode mode */
+				else if(SendMessage(hRadioDecode,BM_GETCHECK,0,0) == BST_CHECKED)
+				{
+				}
+				else
+				{
+					MessageBoxA(hwndDlg,"Check Options!","Oops!",MB_OK);
 				}
 				break;
 			}
