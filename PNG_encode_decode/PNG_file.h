@@ -28,7 +28,7 @@ public:
 	void outputPNG(const char *outputFileName);
 
 	//Function for outputing the decoded PNG to a file
-	void decode(char *szOutputMessage, char *szPassPhrase);
+	void decode(char **szOutputMessage, char *szPassPhrase);
 
 private:
 	png_bytep* row_pointers;
