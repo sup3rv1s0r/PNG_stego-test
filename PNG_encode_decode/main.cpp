@@ -59,10 +59,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 
 BOOL CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	HWND hRadioEncode, hRadioDecode;
+	HWND hCheckEncryption;
+	HWND hEditMessage, hEditEncryption;
+
 	switch(uMsg)
 	{
-	case WM_INITDIALOG:			
-		return 1;
+	case WM_INITDIALOG:
+		break;
 	case WM_COMMAND:
 		switch(wParam)
 		{
@@ -124,10 +128,47 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				RemoveProp(GetParent(hwndDlg),"OFN");
 				break;
 			}
-		}
+		case IDC_RADIO_ENCODE:
+			{
+				hRadioEncode = GetDlgItem(hwndDlg,IDC_RADIO_ENCODE);
+				hEditMessage = GetDlgItem(hwndDlg,IDC_EDIT_STEGO_DATA);
+
+				if(SendMessage(hRadioEncode,BM_GETCHECK,0,0) == BST_CHECKED)
+					EnableWindow(hEditMessage,TRUE);
+				break;
+			}
+		case IDC_RADIO_DECODE:
+			{
+				hRadioDecode = GetDlgItem(hwndDlg,IDC_RADIO_DECODE);
+				hEditMessage = GetDlgItem(hwndDlg,IDC_EDIT_STEGO_DATA);
+
+				if(SendMessage(hRadioDecode,BM_GETCHECK,0,0) == BST_CHECKED)
+					EnableWindow(hEditMessage,FALSE);
+				break;
+			}
+		case IDC_CHECK_ENCRYPT_KEY:
+			{
+				hCheckEncryption = GetDlgItem(hwndDlg,IDC_CHECK_ENCRYPT_KEY);
+				hEditEncryption = GetDlgItem(hwndDlg,IDC_EDIT_ENCRYPTION_KEY);
+
+				if(SendMessage(hCheckEncryption,BM_GETCHECK,0,0) == BST_CHECKED)
+				{
+					SendMessage(hEditEncryption,EM_SETREADONLY,FALSE,FALSE);
+				}
+				else if(SendMessage(hCheckEncryption,BM_GETCHECK,0,0) == BST_UNCHECKED)
+				{
+					SetDlgItemText(hwndDlg,IDC_EDIT_ENCRYPTION_KEY,NULL);
+					SendMessage(hEditEncryption,EM_SETREADONLY,TRUE,FALSE);
+				}
+				break;
+			}
+
 		case WM_DESTROY:
-			return 0;
-			break;
+			{
+				PostQuitMessage(0);
+				break;
+			}
+		}
 	}
 	return FALSE;
 }
