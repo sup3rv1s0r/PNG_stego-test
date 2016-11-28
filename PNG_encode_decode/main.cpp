@@ -62,7 +62,9 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	HWND hRadioEncode, hRadioDecode;
 	HWND hCheckEncryption;
 	HWND hEditMessage, hEditEncryption;
-	char *szPassPhrase;
+	HWND hEditOriginal, hEditOutput;
+	char *szPassPhrase = NULL, *szStegoMessage = NULL;
+	char szOriginalPath[MAX_PATH], szOutputPath[MAX_PATH];
 	int nLen=0;
 
 	switch(uMsg)
@@ -169,6 +171,9 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				hRadioEncode = GetDlgItem(hwndDlg,IDC_RADIO_ENCODE);
 				hRadioDecode = GetDlgItem(hwndDlg,IDC_RADIO_DECODE);
 				hCheckEncryption = GetDlgItem(hwndDlg,IDC_CHECK_ENCRYPT_KEY);
+				hEditMessage = GetDlgItem(hwndDlg,IDC_EDIT_STEGO_DATA);
+				hEditOriginal = GetDlgItem(hwndDlg,IDC_EDIT_ORIGINAL);
+				hEditOutput = GetDlgItem(hwndDlg,IDC_EDIT_OUTPUT);
 
 				/* Check whether en/decrypt it or not */
 				/* If checkbox remains checked */
@@ -192,6 +197,31 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				/* If it is in encode mode */
 				if(SendMessage(hRadioEncode,BM_GETCHECK,0,0) == BST_CHECKED)
 				{
+					if(!GetWindowTextLength(hEditMessage))
+					{
+						MessageBoxA(hwndDlg,"Input Message!","Ooops!",MB_OK);
+						break;
+					}
+					if(!GetWindowTextLength(hEditOriginal))
+					{
+						MessageBoxA(hwndDlg,"Select Input File Path!","Ooops!",MB_OK);
+						break;
+					}
+					if(!GetWindowTextLength(hEditOutput))
+					{
+						MessageBoxA(hwndDlg,"Select Output File Path!","Ooops!",MB_OK);
+						break;
+					}
+
+					GetDlgItemText(hwndDlg,IDC_EDIT_ORIGINAL,szOriginalPath,MAX_PATH);
+					GetDlgItemText(hwndDlg,IDC_EDIT_OUTPUT,szOutputPath,MAX_PATH);
+
+					szStegoMessage = (char*)malloc(sizeof(char)*GetWindowTextLength(hEditMessage)+1);
+					GetDlgItemText(hwndDlg,IDC_EDIT_STEGO_DATA,szStegoMessage,GetWindowTextLength(hEditMessage)+1);
+
+					PNG_file link = PNG_file(szOriginalPath);
+					link.encode(szStegoMessage,szPassPhrase);
+					link.outputPNG(szOutputPath);
 				}
 				/* If it is in decode mode */
 				else if(SendMessage(hRadioDecode,BM_GETCHECK,0,0) == BST_CHECKED)
@@ -201,6 +231,13 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					MessageBoxA(hwndDlg,"Check Options!","Oops!",MB_OK);
 				}
+
+				if(szPassPhrase)
+					free(szPassPhrase);
+
+				if(szStegoMessage)
+					free(szStegoMessage);
+
 				break;
 			}
 

@@ -223,11 +223,11 @@ PNG_file::PNG_file(const char *inputFileName) {
 	fclose(inputFile);
 }
 
-void PNG_file::encode(const char *fileToEncodeName, char *passphrase)
+void PNG_file::encode(char *szMessage, char *szPassPhrase)
 {
 	//BEGIN ENCODING HERE
 
-	FILE * fileToEncode;
+	//FILE * fileToEncode;
 
 	int i = 0;
 
@@ -235,22 +235,26 @@ void PNG_file::encode(const char *fileToEncodeName, char *passphrase)
 	char *szOriginalStr = NULL;
 	char *szEncodedStr = NULL;
 	char *szEncryptedStr = NULL;
-	int nEncryptedLen = 0;
+	int nEncryptedLen = 0, nEncodedLen;
+	unsigned long size = strlen(szMessage);
 
-	fileToEncode = fopen (fileToEncodeName,"rb");
+	/*
+	fileToEncode = fopen (szMessage,"rb");
 
 	//Check if the file opened
 	if(!fileToEncode)
 		exit(1);
 
 	//TODO CONSIDER ADDING CHECK FOR FILES THAT ARE TOO BIG
-	unsigned long size = filesize(fileToEncodeName);
+	unsigned long size = filesize(szMessage);
+	*/
 
 
 	/* malloc memory to store file data */ 
 	szOriginalStr = (char*)malloc(sizeof(char)*size +1);
+	
 	/* read data from file */
-	fread(szOriginalStr,sizeof(char),size,fileToEncode);
+	//fread(szOriginalStr,sizeof(char),size,fileToEncode);
 	
 	/* malloc memory for encoded string*/
 	/* in normal case, encoded string size is 1.3 times bigger than original */
@@ -259,13 +263,13 @@ void PNG_file::encode(const char *fileToEncodeName, char *passphrase)
 	szEncodedStr = (char*)malloc((int)(sizeof(char)*size)*1.3+2);
 
 	/* encode original string with MIME Base64 */
-	size = base64_encode(szOriginalStr,size,&szEncodedStr);
+	size = nEncodedLen = base64_encode(szOriginalStr,size,&szEncodedStr);
 
 	/* the encrypted string is up to 68 bytes larger than the plaintext string */
-	if(passphrase != NULL)
+	if(szPassPhrase != NULL)
 	{
 		szEncryptedStr = (char *)malloc(sizeof(char)*strlen(szEncodedStr)+68);
-		nEncryptedLen = AESStringCrypt((unsigned char*)passphrase,strlen(passphrase),(unsigned char*)szEncodedStr,strlen(szEncodedStr),(unsigned char*)szEncryptedStr);
+		nEncryptedLen = AESStringCrypt((unsigned char*)szPassPhrase,strlen(szPassPhrase),(unsigned char*)szEncodedStr,strlen(szEncodedStr),(unsigned char*)szEncryptedStr);
 
 		size = nEncryptedLen;
 	}
@@ -290,10 +294,19 @@ void PNG_file::encode(const char *fileToEncodeName, char *passphrase)
 			{
 				if(x%BYTE_SIZE == 0)
 				{
-					//if(!fread(&buffer, 1, 1, fileToEncode)) 
-					if(i >= nEncryptedLen)
-						break;
-					buffer = szEncryptedStr[i++];
+					//if(!fread(&buffer, 1, 1, fileToEncode))
+					if(szEncodedStr)
+					{
+						if(i >= nEncryptedLen)
+							break;
+						buffer = szEncryptedStr[i++];
+					}
+					else
+					{
+						if(i >= nEncodedLen)
+							break;
+						buffer = szEncodedStr[i++];
+					}
 				}
 				//png_bytep here = row_pointers[y]+x; for debugging
 				if((buffer & ipow(2,x%BYTE_SIZE)))
@@ -306,7 +319,7 @@ void PNG_file::encode(const char *fileToEncodeName, char *passphrase)
 				exit(1);
 	}
 
-	fclose(fileToEncode);
+	//fclose(fileToEncode);
 
 	free(szOriginalStr);
 	free(szEncodedStr);
@@ -316,11 +329,11 @@ void PNG_file::encode(const char *fileToEncodeName, char *passphrase)
 
 }
 
-void PNG_file::decode(const char *outputFileName, char *passphrase)
+void PNG_file::decode(char *szOutputMessage, char *szPassPhrase)
 {
 	//BEGIN DECODING HERE
 
-	FILE * outputFile;
+	//FILE * outputFile;
 	int loopbit = 0;
 	int i = 0;
 	int nDecodedLen = 0;
@@ -330,15 +343,18 @@ void PNG_file::decode(const char *outputFileName, char *passphrase)
 	unsigned char *szOriginalStr = NULL;
 	unsigned char *szDecodedStr = NULL;
 	unsigned char *szDecryptedStr = NULL;
-	unsigned char *szPassPhrase = (unsigned char *)malloc(sizeof(unsigned char)*strlen(passphrase)+1);
-	memcpy(szPassPhrase,passphrase,strlen(passphrase));
-	szPassPhrase[strlen(passphrase)] = 0x00;
+	//unsigned char *szPassPhrase = (unsigned char *)malloc(sizeof(unsigned char)*strlen(szPassPhrase)+1);
 
-	outputFile = fopen (outputFileName,"wb");
+	//memcpy(szPassPhrase,szPassPhrase,strlen(szPassPhrase));
+	//szPassPhrase[strlen(szPassPhrase)] = 0x00;
+
+	/*
+	outputFile = fopen (szOutputMessage,"wb");
 
 	//Check if the file opened
 	if(!outputFile)
 		exit(1);
+	*/
 
 	unsigned int size = 0;
 
@@ -374,13 +390,13 @@ void PNG_file::decode(const char *outputFileName, char *passphrase)
 				break;
 	}
 
-	if(passphrase != NULL)
+	if(szPassPhrase != NULL)
 	{
 		/* allocate memory for decrypted string */
 		szDecryptedStr = (unsigned char *)malloc(sizeof(unsigned char)*size);
 
 		/* decrypt the string with given passphrase */
-		nDecryptedLen = AESStringDecrypt(szPassPhrase,strlen((char*)szPassPhrase),szOriginalStr,size,szDecryptedStr);
+		nDecryptedLen = AESStringDecrypt((unsigned char*)szPassPhrase,strlen((char*)szPassPhrase),szOriginalStr,size,szDecryptedStr);
 		/* AESStringDecrpyt() returns 0xffffffff if there's any error */
 		/* if not, it indicates that given data has been successfully decrypted */
 		if(nDecryptedLen != 0xffffffff)
@@ -390,20 +406,25 @@ void PNG_file::decode(const char *outputFileName, char *passphrase)
 			szDecodedStr = (unsigned char *)malloc((int)sizeof(unsigned char)*size/1.3+9);
 			nDecodedLen = base64_decode((char *)szDecryptedStr,szDecodedStr,strlen((char*)szDecryptedStr));
 
-
-			fwrite(szDecodedStr,nDecodedLen,1,outputFile);
+			szOutputMessage = (char *)malloc(sizeof(char)*nDecodedLen+1);
+			strncpy(szOutputMessage,(char*)szDecodedStr,nDecodedLen);
 		}
 		else
 		{
-			fwrite("Error : Wrong passphrase!",strlen("Error : Wrong passphrase!"),1,outputFile);
+			//fwrite("Error : Wrong passphrase!",strlen("Error : Wrong passphrase!"),1,outputFile);
+			strncpy(szOutputMessage,"Error : Wrong passphrase!",strlen("Error : Wrong passphrase!"));
 		}
 	}
 	else
 	{
 		szDecodedStr = (unsigned char *)malloc((int)sizeof(unsigned char)*size/1.3+9);
 		nDecodedLen = base64_decode((char *)szOriginalStr,szDecodedStr,strlen((char*)szOriginalStr));
+
+		szOutputMessage = (char *)malloc(sizeof(char)*nDecodedLen+1);
+		strncpy(szOutputMessage,(char*)szDecodedStr,nDecodedLen);
 	}
-	fclose(outputFile);
+
+	//fclose(outputFile);
 
 	free(szOriginalStr);
 	free(szDecodedStr);

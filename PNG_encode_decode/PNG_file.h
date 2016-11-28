@@ -22,13 +22,13 @@ public:
 	PNG_file(const char *inputFileName);
 
 	//Function for encoding data into the PNG from a file
-	void encode(const char *fileToEncodeName, char *passphrase);
+	void encode(char *szMessage, char *szPassPhrase);
 
 	//Function for outputing the newly created PNG to a file
 	void outputPNG(const char *outputFileName);
 
 	//Function for outputing the decoded PNG to a file
-	void decode(const char *outputFileName, char *passphrase);
+	void decode(char *szOutputMessage, char *szPassPhrase);
 
 private:
 	png_bytep* row_pointers;
