@@ -1,10 +1,13 @@
-# PNG_stego-test
-This is just a PNG LSB Steganography test.
+# PNG_steganography - AA23
+PNG LSB Steganography tool with AES Encryption.
+Original source code from https://github.com/3gstudent/PNG_stego-test (Auther : Grant Curell)
 
-[+] Fix some build error of it
-###Reference：
-http://www.codeproject.com/Articles/581298/PNG-Image-Steganography-with-libpng
-###Auther:
-Grant Curell
+Specifications
+[+] Platform : Windows based
+[+] Used Libraries : libpng, zlib, AESCrypt
 
-
+Changes
+[+] In/Output Target Selection
+[+] GUI Implemented
+[+] Message En/Decode with MIME Base64
+[+] Message En/Decryption with AES
